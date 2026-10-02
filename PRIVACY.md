@@ -1,55 +1,24 @@
-# Privacy Policy
+# Privacy: macshot Offline No Network
 
-**Last updated:** March 22, 2026
+Updated October 2, 2026. This document describes this fork.
 
-## Overview
+The signed app uses App Sandbox without network-client or network-server grants.
+Uploads and cloud authentication are compiled out. Sparkle is removed, translation
+is disabled, and external URLs cannot launch a browser from the app.
 
-macshot is a free, open-source screenshot and screen recording tool for macOS. It is designed to run entirely on your device. We do not operate any servers, and we do not collect, store, or have access to any of your data.
+Screenshots, recordings, editable history and preferences are stored locally.
+The save destination and screenshot-history retention remain user-controlled.
+Clipboard contents are available to other applications through macOS. Files saved
+to a synced folder can be uploaded by the service managing that folder.
 
-## What macshot does NOT do
+Screen Recording permission is required to capture the screen. Optional recording
+features can request microphone, camera or speech recognition permission. Caption
+recognition requires on-device support and refuses a cloud fallback.
 
-- **No telemetry or analytics** — macshot does not phone home, track usage, or send any data to us.
-- **No data collection** — we do not collect personal information, usage statistics, crash reports, or any other data.
-- **No server-side storage** — we do not operate any servers. All screenshots, recordings, and settings are stored locally on your Mac.
-- **No access to your uploads** — when you upload to Google Drive, files go directly to your own Google Drive account. We cannot see, access, or download your files. When you upload to imgbb, files go directly to imgbb's servers under their privacy policy.
+This fork adds no telemetry or analytics. App network restrictions do not control
+traffic from unrelated macOS services or other applications. Building the source
+may fetch dependencies; downloading a release also uses your browser's network.
 
-## Data stored on your device
-
-macshot stores the following data locally on your Mac:
-
-- **Screenshots and recordings** — saved to your chosen folder (default: Pictures).
-- **Screenshot history** — recent captures stored in `~/Library/Application Support/com.sw33tlie.macshot/history/`. You control the history size in Preferences (set to 0 to disable).
-- **Preferences** — settings stored in macOS UserDefaults.
-- **Google Drive OAuth tokens** — if you sign in to Google Drive, authentication tokens are stored in `~/Library/Application Support/com.sw33tlie.macshot/gdrive_tokens.json` with owner-only permissions (0600). Tokens are used solely to upload files to your own Google Drive. You can sign out at any time in Preferences, which deletes the token file.
-
-## Third-party services
-
-macshot integrates with the following optional third-party services. Use of these services is entirely opt-in:
-
-### Google Drive
-- **Purpose:** Upload screenshots and recordings to your own Google Drive.
-- **Scope:** `drive.file` — macshot can only access files it created in your Drive. It cannot read, list, or modify any other files in your Drive.
-- **Data sent:** The image or video file you choose to upload, plus a filename.
-- **Authentication:** OAuth 2.0. You sign in via Google's login page in your browser. macshot stores a refresh token locally (see above) to avoid repeated sign-ins.
-- **Revoking access:** You can sign out in macshot Preferences, or revoke access at any time from [Google Account Permissions](https://myaccount.google.com/permissions).
-
-### imgbb
-- **Purpose:** Upload screenshots to imgbb for shareable image links.
-- **Data sent:** The image file you choose to upload.
-- **imgbb's privacy policy:** [https://imgbb.com/privacy](https://imgbb.com/privacy)
-
-### Sparkle (auto-updates)
-- **Purpose:** Check for and install macshot updates.
-- **Data sent:** A request to `https://raw.githubusercontent.com/sw33tLie/macshot/main/appcast.xml` to check for new versions. No personal data is included in the request.
-
-## Permissions
-
-macshot requests **Screen Recording** permission from macOS. This permission is required to capture screenshots and record your screen. macOS controls this permission — you can revoke it at any time in System Settings > Privacy & Security > Screen Recording.
-
-## Open source
-
-macshot is fully open source. You can inspect the complete source code at [https://github.com/sw33tLie/macshot](https://github.com/sw33tLie/macshot) to verify these claims.
-
-## Contact
-
-If you have questions about this privacy policy, open an issue at [https://github.com/sw33tLie/macshot/issues](https://github.com/sw33tLie/macshot/issues).
+For implementation and test details, see [the README](README.md) and
+[the network patch guide](docs/no-network.md). Upstream macshot's policy is
+[available separately](https://github.com/sw33tLie/macshot/blob/4c1361e4a237a005495f2eb5a6859503ee7a9526/PRIVACY.md).

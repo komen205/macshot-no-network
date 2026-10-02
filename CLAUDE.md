@@ -1,3 +1,24 @@
+# No-network fork: rules that override upstream notes below
+
+This repository publishes **macshot Offline No Network**, based on upstream
+commit `4c1361e4a237a005495f2eb5a6859503ee7a9526`. The architecture guidance
+below is retained from upstream; its release and online-build descriptions are
+historical and do not describe this fork.
+
+- Keep App Sandbox enabled and omit every network entitlement.
+- Keep `OFFLINE` enabled in Debug and Release. Never reintroduce Sparkle, cloud
+  authentication, uploads or network translation into the built app.
+- Route URL launches through `LocalWorkspace`; only local file URLs and macOS
+  settings links are allowed. Keep capture content out of browser launches.
+- Build with `bash scripts/build-no-network.sh`; this verifies the signed app
+  and tests TCP, UDP and URLSession denial against a loopback fixture.
+- Test with `bash scripts/run-tests.sh`. A Release build is required for changes
+  to app code. New source, test, script and documentation files stay under 500 lines.
+- `.github/workflows/tests.yml` is this fork's CI. Releases are published manually;
+  upstream signing, notarization, Sparkle and Homebrew release automation is removed.
+- Preserve the GPLv3 license and upstream attribution. Documentation must describe
+  actual network features without claiming unproven telemetry or data collection.
+
 # macshot
 
 Native macOS screenshot & annotation tool inspired by Flameshot. Built with Swift + AppKit. No Qt, no Electron.
