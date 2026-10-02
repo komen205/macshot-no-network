@@ -1,6 +1,5 @@
 import Cocoa
 import Carbon
-import Sparkle
 import ServiceManagement
 import UniformTypeIdentifiers
 import AVFoundation
@@ -191,10 +190,9 @@ private final class CaptureTimingTrace: @unchecked Sendable {
 }
 
 @MainActor
-class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var statusItem: NSStatusItem!
-    private var updaterController: SPUStandardUpdaterController!
     private var overlayControllers: [OverlayWindowController] = []
     private var settingsController: SettingsWindowController?
     private var onboardingController: PermissionOnboardingController?
@@ -315,11 +313,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
         // something references ScreenshotHistory.shared.
         _ = ScreenshotHistory.shared
 
-        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: self, userDriverDelegate: nil)
-        // Disable silent update downloads — updates should only apply
-        // via explicit user action ("Check for Updates..." / Install),
-        // so an automatic update can't be mistaken for a silent crash.
-        updaterController.updater.automaticallyDownloadsUpdates = false
         setupMainMenu()
         setupStatusBar()
         DistributedNotificationCenter.default().addObserver(
@@ -904,11 +897,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
         prefsItem.target = self
         prefsItem.image = NSImage(systemSymbolName: "gear", accessibilityDescription: nil)
         menu.addItem(prefsItem)
-
-        let updateItem = NSMenuItem(title: L("Check for Updates..."), action: #selector(checkForUpdates), keyEquivalent: "")
-        updateItem.target = self
-        updateItem.image = NSImage(systemSymbolName: "arrow.triangle.2.circlepath", accessibilityDescription: nil)
-        menu.addItem(updateItem)
 
         menu.addItem(NSMenuItem.separator())
 
@@ -2352,7 +2340,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
         let folder = RecordingSessionStore.rootURL
         do {
             try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-            NSWorkspace.shared.open(folder)
+            LocalWorkspace.open(folder)
         } catch {
             showFailureToast(error.localizedDescription)
         }
@@ -2487,19 +2475,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
 
     // MARK: - Quit
 
-    @objc private func checkForUpdates() {
-        NSApp.activate(ignoringOtherApps: true)
-        updaterController.checkForUpdates(nil)
-    }
-
     @objc private func quitApp() {
         NSApp.terminate(nil)
-    }
-
-    // MARK: - SPUUpdaterDelegate
-
-    func allowedChannels(for updater: SPUUpdater) -> Set<String> {
-        UserDefaults.standard.bool(forKey: "betaUpdatesEnabled") ? ["beta"] : []
     }
 }
 
@@ -3166,7 +3143,7 @@ extension AppDelegate: OverlayWindowControllerDelegate {
             let response = alert.runModal()
             if response == .alertFirstButtonReturn {
                 if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-                    NSWorkspace.shared.open(url)
+                    LocalWorkspace.open(url)
                 }
             }
             return
@@ -3251,7 +3228,7 @@ extension AppDelegate: OverlayWindowControllerDelegate {
         let response = alert.runModal()
         if response == .alertFirstButtonReturn {
             if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-                NSWorkspace.shared.open(url)
+                LocalWorkspace.open(url)
             }
         }
     }
@@ -3268,7 +3245,7 @@ extension AppDelegate: OverlayWindowControllerDelegate {
         let response = alert.runModal()
         if response == .alertFirstButtonReturn {
             if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent") {
-                NSWorkspace.shared.open(url)
+                LocalWorkspace.open(url)
             }
         }
     }
@@ -3299,7 +3276,7 @@ extension AppDelegate: OverlayWindowControllerDelegate {
                 let response = alert.runModal()
                 if response == .alertFirstButtonReturn {
                     if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-                        NSWorkspace.shared.open(url)
+                        LocalWorkspace.open(url)
                     }
                 }
                 return

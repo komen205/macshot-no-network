@@ -362,14 +362,14 @@ class OCRResultController: NSObject {
     @objc private func openQRCode(_ sender: NSButton) {
         guard sender.tag >= 0, sender.tag < qrCodes.count,
               let url = qrCodes[sender.tag].url else { return }
-        NSWorkspace.shared.open(url)
+        LocalWorkspace.open(url)
     }
 
     @objc private func openAISearch() {
         guard let text = textView?.string, !text.isEmpty else { return }
         guard let encoded = text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: "https://www.google.com/search?q=\(encoded)&csuir=1&udm=50") else { return }
-        NSWorkspace.shared.open(url)
+        LocalWorkspace.open(url)
         close()
     }
 

@@ -295,7 +295,7 @@ class PermissionOnboardingController: NSWindowController {
         // attempts a capture — no CGRequestScreenCaptureAccess() call needed
         // (that API shows the redundant native dialog we want to avoid).
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture") {
-            NSWorkspace.shared.open(url)
+            LocalWorkspace.open(url)
         }
 
         statusLabel?.stringValue = L("Enable macshot, then try taking a screenshot")

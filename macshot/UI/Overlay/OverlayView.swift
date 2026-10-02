@@ -8086,7 +8086,7 @@ class OverlayView: NSView {
         let response = alert.runModal()
         if response == .alertFirstButtonReturn {
             if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Camera") {
-                NSWorkspace.shared.open(url)
+                LocalWorkspace.open(url)
             }
         }
     }
@@ -8930,7 +8930,7 @@ class OverlayView: NSView {
             if let url = URL(
                 string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone"
             ) {
-                NSWorkspace.shared.open(url)
+                LocalWorkspace.open(url)
             }
         }
     }

@@ -224,7 +224,7 @@ class UploadToastController {
 
     @objc private func openLink() {
         guard let link = currentLink, let url = URL(string: link) else { return }
-        NSWorkspace.shared.open(url)
+        LocalWorkspace.open(url)
         dismiss()
     }
 

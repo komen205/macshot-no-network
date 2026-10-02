@@ -95,8 +95,6 @@ class SettingsWindowController: NSWindowController, NSToolbarDelegate, NSWindowD
     private var filenameTemplatePreview: NSTextField!
     private var recordingFilenameTemplateField: NSTextField!
     private var recordingFilenameTemplatePreview: NSTextField!
-    private var autoUpdateCheckbox: NSButton!
-    private var betaUpdateCheckbox: NSButton!
     private var accentColorWell: NSColorWell!
     private var iconColorWell: NSColorWell!
     private var bgColorWell: NSColorWell!
@@ -509,14 +507,6 @@ class SettingsWindowController: NSWindowController, NSToolbarDelegate, NSWindowD
         stack.addArrangedSubview(indented(urlSchemeRow))
         stack.setCustomSpacing(6, after: stack.arrangedSubviews.last!)
 
-        autoUpdateCheckbox = NSButton(checkboxWithTitle: L("Check for updates automatically"), target: self, action: #selector(autoUpdateChanged(_:)))
-        stack.addArrangedSubview(indented(autoUpdateCheckbox))
-        stack.setCustomSpacing(4, after: stack.arrangedSubviews.last!)
-
-        betaUpdateCheckbox = NSButton(checkboxWithTitle: L("Check for beta updates"), target: self, action: #selector(betaUpdateChanged(_:)))
-        stack.addArrangedSubview(indented(betaUpdateCheckbox))
-        stack.setCustomSpacing(20, after: stack.arrangedSubviews.last!)
-
         // ── Appearance ───────────────────────────────────────
         stack.addArrangedSubview(sectionHeader(L("Appearance")))
         stack.setCustomSpacing(10, after: stack.arrangedSubviews.last!)
@@ -715,7 +705,7 @@ class SettingsWindowController: NSWindowController, NSToolbarDelegate, NSWindowD
         if FileManager.default.fileExists(atPath: plist.path) {
             NSWorkspace.shared.activateFileViewerSelecting([plist])
         } else {
-            NSWorkspace.shared.open(prefsDir)
+            LocalWorkspace.open(prefsDir)
         }
     }
 
@@ -2182,7 +2172,8 @@ class SettingsWindowController: NSWindowController, NSToolbarDelegate, NSWindowD
         stack.setCustomSpacing(20, after: desc)
 
         #if OFFLINE
-        let offlineNote = NSTextField(wrappingLabelWithString: L("Offline build: upload and cloud storage integrations are removed. Update checks may still connect to MacShot's update server. Screenshots and recordings stay local unless you share or save them yourself."))
+        // This local fork uses an English notice; upstream translations describe update-enabled builds.
+        let offlineNote = NSTextField(wrappingLabelWithString: "No-network build: uploads, update checks, translation and external links are disabled. The macOS sandbox denies network connections.")
         offlineNote.font = NSFont.systemFont(ofSize: 12)
         offlineNote.textColor = .secondaryLabelColor
         offlineNote.alignment = .center
@@ -2683,11 +2674,6 @@ class SettingsWindowController: NSWindowController, NSToolbarDelegate, NSWindowD
         recordingFilenameTemplateField.stringValue = UserDefaults.standard.string(forKey: FilenameFormatter.recordingUserDefaultsKey) ?? FilenameFormatter.defaultRecordingTemplate
         updateRecordingFilenamePreview()
 
-        let autoUpdate = UserDefaults.standard.object(forKey: "SUEnableAutomaticChecks") as? Bool ?? true
-        autoUpdateCheckbox.state = autoUpdate ? .on : .off
-
-        betaUpdateCheckbox.state = UserDefaults.standard.bool(forKey: "betaUpdatesEnabled") ? .on : .off
-
         accentColorWell.color = ToolbarLayout.accentColor
         iconColorWell.color = ToolbarLayout.iconColor
         bgColorWell.color = ToolbarLayout.bgColor
@@ -2881,7 +2867,7 @@ class SettingsWindowController: NSWindowController, NSToolbarDelegate, NSWindowD
         LanguageManager.shared.currentLanguage = languages[idx].code
     }
     @objc private func openGitHub() {
-        if let url = URL(string: "https://github.com/sw33tLie/macshot") { NSWorkspace.shared.open(url) }
+        if let url = URL(string: "https://github.com/sw33tLie/macshot") { LocalWorkspace.open(url) }
     }
     @objc private func imageFormatChanged(_ sender: NSPopUpButton) {
         guard let raw = sender.selectedItem?.representedObject as? String,
@@ -3372,21 +3358,13 @@ class SettingsWindowController: NSWindowController, NSToolbarDelegate, NSWindowD
         menuBarIconPresetPopup.isEnabled = custom
     }
 
-    @objc private func autoUpdateChanged(_ sender: NSButton) {
-        UserDefaults.standard.set(sender.state == .on, forKey: "SUEnableAutomaticChecks")
-    }
-
-    @objc private func betaUpdateChanged(_ sender: NSButton) {
-        UserDefaults.standard.set(sender.state == .on, forKey: "betaUpdatesEnabled")
-    }
-
     @objc private func translationProviderChanged(_ sender: NSPopUpButton) {
         TranslationService.provider = sender.indexOfSelectedItem == 0 ? .apple : .google
     }
 
     @objc private func openTranslationSettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.Localization.Settings.extension?Translation") {
-            NSWorkspace.shared.open(url)
+            LocalWorkspace.open(url)
         }
     }
 

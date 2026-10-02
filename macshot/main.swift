@@ -1,3 +1,7 @@
+#if !OFFLINE
+#error("The no-network fork must compile with OFFLINE to exclude upload implementations.")
+#endif
+
 import Cocoa
 
 // Disable "AutomaticAppKit" layer content format introduced in Big Sur.

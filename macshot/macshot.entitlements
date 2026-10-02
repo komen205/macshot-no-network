@@ -4,8 +4,6 @@
 <dict>
 	<key>com.apple.security.app-sandbox</key>
 	<true/>
-	<key>com.apple.security.network.client</key>
-	<true/>
 	<key>com.apple.security.files.user-selected.read-write</key>
 	<true/>
 	<key>com.apple.security.files.bookmarks.app-scope</key>
@@ -17,8 +15,6 @@
 	<key>com.apple.security.temporary-exception.mach-lookup.global-name</key>
 	<array>
 		<string>com.apple.axserver</string>
-		<string>com.sw33tlie.macshot.macshot-spks</string>
-		<string>com.sw33tlie.macshot.macshot-spki</string>
 	</array>
 	<key>com.apple.security.temporary-exception.mach-lookup.local-name</key>
 	<array>
